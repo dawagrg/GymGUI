@@ -137,3 +137,4 @@ public abstract class GymMember {
         System.out.println("Active Status: " + (activeStatus ? "Active" : "Inactive"));
     }
 }
+
