@@ -109,30 +109,4 @@ public class PremiumMember extends GymMember {
         }
     }
 
-    /**
-     * This method resets the premium member to initial state.
-     * It clears payment, discount, and personal trainer details.
-     */
-    public void revertPremiumMember() {
-        super.resetMember();
-        personalTrainer = "";
-        isFullPayment = false;
-        paidAmount = 0;
-        discountAmount = 0;
-    }
-
-    /**
-     * This method displays all details of the premium member, including payment and trainer information.
-     */
-    @Override
-    public void display() {
-        super.display();
-        System.out.println("Personal Trainer: " + personalTrainer);
-        System.out.println("Paid Amount: " + paidAmount);
-        System.out.println("Full Payment Status: " + (isFullPayment ? "Yes" : "No"));
-        System.out.println("Remaining Amount: " + (premiumCharge - paidAmount));
-        if (isFullPayment) {
-            System.out.println("Discount Amount: " + discountAmount);
-        }
-    }
-}
+    
