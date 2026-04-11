@@ -474,4 +474,137 @@ class GymGUI {
         }
     }
 
+    /**
+    * Listener for upgrading the plan of a regular member.
+    * Asks for member ID, checks if the member is a RegularMember, and upgrades their plan.
+    * Updates the displayed plan price upon success.
+    */
+    private class UpgradePlanListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String idInput = JOptionPane.showInputDialog(frame, "Enter Member ID:", "Upgrade Plan", JOptionPane.QUESTION_MESSAGE);
+            if (idInput != null && !idInput.trim().isEmpty()) {
+                try {
+                    int id = Integer.parseInt(idInput);
+                    String newPlan = comboPlan.getSelectedItem().toString().toLowerCase();
+                    for (GymMember member : members) {
+                        if (member.getId() == id && member instanceof RegularMember) {
+                            RegularMember regularMember = (RegularMember) member;
+                            String result = regularMember.upgradePlan(newPlan);
+                            JOptionPane.showMessageDialog(frame, result, "Upgrade Plan", 
+                                result.contains("successfully") ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+                            txtRegularPlanPrice.setText(String.valueOf(regularMember.getPrice()));
+                            return;
+                        }
+                    }
+                    JOptionPane.showMessageDialog(frame, "Regular member not found", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
+    /**
+    * Listener for calculating the discount for a premium member.
+    * Asks for member ID, verifies the member, and updates the discount amount in the UI.
+    */
+    private class CalculateDiscountListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String idInput = JOptionPane.showInputDialog(frame, "Enter Member ID:", "Calculate Discount", JOptionPane.QUESTION_MESSAGE);
+            if (idInput != null && !idInput.trim().isEmpty()) {
+                try {
+                    int id = Integer.parseInt(idInput);
+                    for (GymMember member : members) {
+                        if (member.getId() == id && member instanceof PremiumMember) {
+                            PremiumMember premiumMember = (PremiumMember) member;
+                            premiumMember.calculateDiscount();
+                            txtDiscountAmount.setText(String.valueOf(premiumMember.getDiscountAmount()));
+                            JOptionPane.showMessageDialog(frame, "Discount calculated: " + premiumMember.getDiscountAmount(), 
+                                "Success", JOptionPane.INFORMATION_MESSAGE);
+                            return;
+                        }
+                    }
+                    JOptionPane.showMessageDialog(frame, "Premium member not found", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
+    /**
+    * Listener for reverting a regular member's plan.
+    * Asks for member ID and reason, verifies the member, and performs the revert operation.
+    */
+    private class RevertRegularListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JPanel panel = new JPanel();
+            panel.setLayout(new java.awt.GridLayout(2, 2, 5, 5));
+            
+            JTextField idField = new JTextField(10);
+            JTextField reasonField = new JTextField(10);
+            
+            panel.add(new JLabel("Member ID:"));
+            panel.add(idField);
+            panel.add(new JLabel("Removal Reason:"));
+            panel.add(reasonField);
+            
+            int result = JOptionPane.showConfirmDialog(frame, panel, "Revert Regular Member", 
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                
+            if (result == JOptionPane.OK_OPTION) {
+                String idInput = idField.getText().trim();
+                String reason = reasonField.getText().trim();
+                
+                if (idInput.isEmpty() || reason.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Please fill in all fields", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                try {
+                    int id = Integer.parseInt(idInput);
+                    for (GymMember member : members) {
+                        if (member.getId() == id && member instanceof RegularMember) {
+                            RegularMember regularMember = (RegularMember) member;
+                            regularMember.revertRegularMember(reason);
+                            JOptionPane.showMessageDialog(frame, "Regular member reverted", "Success", JOptionPane.INFORMATION_MESSAGE);
+                            txtRegularPlanPrice.setText("6500");
+                            return;
+                        }
+                    }
+                    JOptionPane.showMessageDialog(frame, "Regular member not found", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
+    /**
+    * Listener for reverting a premium member.
+    * Asks for member ID and resets any premium-specific features like discount or charges.
+    */
+    private class RevertPremiumListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String idInput = JOptionPane.showInputDialog(frame, "Enter Member ID:", "Revert Premium Member", JOptionPane.QUESTION_MESSAGE);
+            if (idInput != null && !idInput.trim().isEmpty()) {
+                try {
+                    int id = Integer.parseInt(idInput);
+                    for (GymMember member : members) {
+                        if (member.getId() == id && member instanceof PremiumMember) {
+                            PremiumMember premiumMember = (PremiumMember) member;
+                            premiumMember.revertPremiumMember();
+                            JOptionPane.showMessageDialog(frame, "Premium member reverted", "Success", JOptionPane.INFORMATION_MESSAGE);
+                            txtDiscountAmount.setText("0");
+                            return;
+                        }
+                    }
+                    JOptionPane.showMessageDialog(frame, "Premium member not found", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
     
