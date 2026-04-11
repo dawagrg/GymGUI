@@ -607,4 +607,127 @@ class GymGUI {
         }
     }
 
+    /**
+    * Listener for processing due payment for a premium member.
+    * Asks for member ID and amount, and updates the payment and discount info if valid.
+    */
+    private class PayDueListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JPanel panel = new JPanel();
+            panel.setLayout(new java.awt.GridLayout(2, 2, 5, 5));
+            
+            JTextField idField = new JTextField(10);
+            JTextField amountField = new JTextField(10);
+            
+            panel.add(new JLabel("Member ID:"));
+            panel.add(idField);
+            panel.add(new JLabel("Amount to Pay:"));
+            panel.add(amountField);
+            
+            int result = JOptionPane.showConfirmDialog(frame, panel, "Pay Due Amount", 
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                String idInput = idField.getText().trim();
+                String amountInput = amountField.getText().trim();
+                
+                if (idInput.isEmpty() || amountInput.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Please fill in all fields", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                try {
+                    int id = Integer.parseInt(idInput);
+                    double amount = Double.parseDouble(amountInput);
+                    
+                    for (GymMember member : members) {
+                        if (member.getId() == id && member instanceof PremiumMember) {
+                            PremiumMember premiumMember = (PremiumMember) member;
+                            String result2 = premiumMember.payDueAmount(amount);
+                            JOptionPane.showMessageDialog(frame, result2, "Pay Due", 
+                                result2.contains("successfully") ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
+                            txtDiscountAmount.setText(String.valueOf(premiumMember.getDiscountAmount()));
+                            return;
+                        }
+                    }
+                    JOptionPane.showMessageDialog(frame, "Premium member not found", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid ID or amount format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
+    /**
+    * Listener for displaying all gym member information.
+    * Creates a new frame and lists details of all regular and premium members.
+    */
+    private class DisplayListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFrame displayFrame = new JFrame("Member Information");
+            displayFrame.setLayout(null);
+            displayFrame.setSize(600, 400);
+            
+            StringBuilder sb = new StringBuilder();
+            sb.append("===== Gym Members =====\n\n");
+    
+            for (GymMember member : members) {
+                if (member instanceof RegularMember) {
+                    RegularMember regMember = (RegularMember) member;
+                    sb.append("Regular Member:\n");
+                    sb.append("ID: ").append(member.getId()).append("\n");
+                    sb.append("Name: ").append(member.getName()).append("\n");
+                    sb.append("Location: ").append(member.getLocation()).append("\n");
+                    sb.append("Phone: ").append(member.getPhone()).append("\n");
+                    sb.append("Email: ").append(member.getEmail()).append("\n");
+                    sb.append("Gender: ").append(member.getGender()).append("\n");
+                    sb.append("DOB: ").append(member.getDOB()).append("\n");
+                    sb.append("Membership Start Date: ").append(member.getMembershipStartDate()).append("\n");
+                    sb.append("Attendance: ").append(member.getAttendance()).append("\n");
+                    sb.append("Loyalty Points: ").append(member.getLoyaltyPoints()).append("\n");
+                    sb.append("Status: ").append(member.isActiveStatus() ? "Active" : "Inactive").append("\n");
+                    sb.append("Plan: ").append(regMember.getPlan()).append("\n");
+                    sb.append("Price: ").append(regMember.getPrice()).append("\n");
+                    sb.append("\n");
+                } else if (member instanceof PremiumMember) {
+                    PremiumMember premMember = (PremiumMember) member;
+                    sb.append("Premium Member:\n");
+                    sb.append("ID: ").append(member.getId()).append("\n");
+                    sb.append("Name: ").append(member.getName()).append("\n");
+                    sb.append("Location: ").append(member.getLocation()).append("\n");
+                    sb.append("Phone: ").append(member.getPhone()).append("\n");
+                    sb.append("Email: ").append(member.getEmail()).append("\n");
+                    sb.append("Gender: ").append(member.getGender()).append("\n");
+                    sb.append("DOB: ").append(member.getDOB()).append("\n");
+                    sb.append("Membership Start Date: ").append(member.getMembershipStartDate()).append("\n");
+                    sb.append("Attendance: ").append(member.getAttendance()).append("\n");
+                    sb.append("Loyalty Points: ").append(member.getLoyaltyPoints()).append("\n");
+                    sb.append("Status: ").append(member.isActiveStatus() ? "Active" : "Inactive").append("\n");
+                    sb.append("Personal Trainer: ").append(premMember.getPersonalTrainer()).append("\n");
+                    sb.append("Paid Amount: ").append(premMember.getPaidAmount()).append("\n");
+                    sb.append("Premium Charge: ").append(premMember.getPremiumCharge()).append("\n");
+                    sb.append("\n");
+                }
+            }
+    
+            JTextArea textArea = new JTextArea(sb.toString());
+            textArea.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setBounds(20, 20, 540, 320);
+            
+            displayFrame.add(scrollPane);
+            
+            JButton closeButton = new JButton("Close");
+            closeButton.setBounds(240, 340, 100, 30);
+            closeButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    displayFrame.dispose();
+                }
+            });
+            displayFrame.add(closeButton);
+            displayFrame.setLocationRelativeTo(frame);
+            displayFrame.setVisible(true);
+        }
+    }
+
     
