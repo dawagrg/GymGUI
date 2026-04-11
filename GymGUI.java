@@ -397,4 +397,81 @@ class GymGUI {
         }
     }
 
+    /**
+    * Listener for activating a member's gym membership.
+    * Searches for the member by ID and activates their membership if found.
+    */
+    private class ActivateMembershipListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                int id = Integer.parseInt(txtId.getText());
+
+                for (GymMember member : members) {
+                    if (member.getId() == id) {
+                        member.activateMembership();
+                        JOptionPane.showMessageDialog(frame, "Membership activated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+                }
+
+                JOptionPane.showMessageDialog(frame, "Member not found", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    /**
+    * Listener for deactivating a member's gym membership.
+    * Searches for the member by ID and deactivates their membership if found.
+    */
+    private class DeactivateMembershipListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                int id = Integer.parseInt(txtId.getText());
+
+                for (GymMember member : members) {
+                    if (member.getId() == id) {
+                        member.deactivateMembership();
+                        JOptionPane.showMessageDialog(frame, "Membership deactivated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        return;
+                    }
+                }
+
+                JOptionPane.showMessageDialog(frame, "Member not found", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    /**
+    * Listener for marking attendance of a gym member.
+    * Asksfor member ID and marks attendance if the member exists and is active.
+    */
+    private class MarkAttendanceListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            String idInput = JOptionPane.showInputDialog(frame, "Enter Member ID:", "Mark Attendance", JOptionPane.QUESTION_MESSAGE);
+            if (idInput != null && !idInput.trim().isEmpty()) {
+                try {
+                    int id = Integer.parseInt(idInput);
+                    for (GymMember member : members) {
+                        if (member.getId() == id) {
+                            if (member.isActiveStatus()) {
+                                member.markAttendance();
+                                JOptionPane.showMessageDialog(frame, "Attendance marked successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Member is not active", "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                            return;
+                        }
+                    }
+                    JOptionPane.showMessageDialog(frame, "Member not found", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
     
