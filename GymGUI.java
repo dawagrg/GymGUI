@@ -320,4 +320,81 @@ class GymGUI {
         frame.setVisible(true);
     }
 
+    /**
+    * Listener for adding a regular gym member.
+    * Validates ID uniqueness and parses form data to create a new RegularMember object,
+    * then adds it to the members list.
+    */
+    private class AddRegularListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                int id = Integer.parseInt(txtId.getText());
+
+                for (GymMember member : members) {
+                    if (member.getId() == id) {
+                        JOptionPane.showMessageDialog(frame, "Member ID already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+
+                String name = txtName.getText();
+                String location = txtLocation.getText();
+                String phone = txtPhone.getText();
+                String email = txtEmail.getText();
+                String gender = maleButton.isSelected() ? "Male" : "Female";
+
+                String dob = comboDOBDay.getSelectedItem() + "-" + comboDOBMonth.getSelectedItem() + "-" + comboDOBYear.getSelectedItem();
+                String startDate = comboMembershipDateDay.getSelectedItem() + "-" + comboMembershipDateMonth.getSelectedItem() + "-" + comboMembershipDateYear.getSelectedItem();
+                String referral = txtReferralSource.getText();
+
+                RegularMember newMember = new RegularMember(id, name, location, phone, email, gender, dob, startDate, referral);
+                members.add(newMember);
+
+                JOptionPane.showMessageDialog(frame, "Regular member added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    /**
+    * Listener for adding a premium gym member.
+    * Validates ID uniqueness and parses form data to create a new PremiumMember object,
+    * then adds it to the members list.
+    */
+    private class AddPremiumListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                int id = Integer.parseInt(txtId.getText());
+
+                for (GymMember member : members) {
+                    if (member.getId() == id) {
+                        JOptionPane.showMessageDialog(frame, "Member ID already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+
+                String name = txtName.getText();
+                String location = txtLocation.getText();
+                String phone = txtPhone.getText();
+                String email = txtEmail.getText();
+                String gender = maleButton.isSelected() ? "Male" : "Female";
+
+                String dob = comboDOBDay.getSelectedItem() + "-" + comboDOBMonth.getSelectedItem() + "-" + comboDOBYear.getSelectedItem();
+                String startDate = comboMembershipDateDay.getSelectedItem() + "-" + comboMembershipDateMonth.getSelectedItem() + "-" + comboMembershipDateYear.getSelectedItem();
+                String trainer = txtTrainersName.getText();
+
+                PremiumMember newMember = new PremiumMember(id, name, location, phone, email, 
+                        gender, dob, startDate, trainer);
+                members.add(newMember);
+
+                JOptionPane.showMessageDialog(frame, "Premium member added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     
