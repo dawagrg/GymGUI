@@ -915,4 +915,182 @@ class GymGUI {
         }
     }
 
+    /**
+    * Activates a GymMember's membership by ID if found.
+    * Shows appropriate feedback in a message dialog.
+    */
+    private void activateMembership() {
+        try {
+            int id = Integer.parseInt(txtId.getText());
+
+            for (GymMember member : members) {
+                if (member.getId() == id) {
+                    member.activateMembership();
+                    JOptionPane.showMessageDialog(frame, "Membership activated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+            }
+
+            JOptionPane.showMessageDialog(frame, "Member not found", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+    * Deactivates a GymMember's membership using their ID.
+    * Displays a message based on the result or any errors encountered.
+    */
+    private void deactivateMembership() {
+        try {
+            int id = Integer.parseInt(txtId.getText());
+
+            for (GymMember member : members) {
+                if (member.getId() == id) {
+                    member.deactivateMembership();
+                    JOptionPane.showMessageDialog(frame, "Membership deactivated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+            }
+
+            JOptionPane.showMessageDialog(frame, "Member not found", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame, "Error adding member", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+    * Marks attendance for a GymMember if they are active.
+    * Displays relevant success or error dialogs.
+    */
+    private void markAttendance() {
+        try {
+            int id = Integer.parseInt(txtId.getText());
+
+            for (GymMember member : members) {
+                if (member.getId() == id) {
+                    if (member.isActiveStatus()) {
+                        member.markAttendance();
+                        JOptionPane.showMessageDialog(frame, "Attendance marked successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Member is not active", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                    return;
+                }
+            }
+
+            JOptionPane.showMessageDialog(frame, "Member not found", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame, "Error adding member", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+    * Reverts changes for a RegularMember using a provided reason.
+    * Shows a message upon success or if the member isn't found.
+    */
+    private void revertRegularMember() {
+        try {
+            int id = Integer.parseInt(txtId.getText());
+            String reason = txtRemovalReason.getText();
+
+            for (GymMember member : members) {
+                if (member.getId() == id && member instanceof RegularMember) {
+                    RegularMember regularMember = (RegularMember) member;
+                    regularMember.revertRegularMember(reason);
+                    JOptionPane.showMessageDialog(frame, "Regular member reverted", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    txtRegularPlanPrice.setText("6500");
+                    return;
+                }
+            }
+
+            JOptionPane.showMessageDialog(frame, "Regular member not found", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame, "Error reverting member", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+    * Reverts PremiumMember details to default values.
+    * Notifies the user of success or errors through dialogs.
+    */
+    private void revertPremiumMember() {
+        try {
+            int id = Integer.parseInt(txtId.getText());
+
+            for (GymMember member : members) {
+                if (member.getId() == id && member instanceof PremiumMember) {
+                    PremiumMember premiumMember = (PremiumMember) member;
+                    premiumMember.revertPremiumMember();
+                    JOptionPane.showMessageDialog(frame, "Premium member reverted", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    txtDiscountAmount.setText("0");
+                    return;
+                }
+            }
+
+            JOptionPane.showMessageDialog(frame, "Premium member not found", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame, "Error reverting premium member", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+    * Displays a summary of all GymMember details in a dialog box.
+    * Groups members by type (Regular or Premium).
+    */
+    private void displayMembers() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("===== Gym Members =====\n");
+
+        for (GymMember member : members) {
+            if (member instanceof RegularMember) {
+                sb.append("Regular Member:\n");
+            } else {
+                sb.append("Premium Member:\n");
+            }
+            sb.append("ID: ").append(member.getId()).append("\n");
+            sb.append("Name: ").append(member.getName()).append("\n");
+            sb.append("Location: ").append(member.getLocation()).append("\n");
+            sb.append("Phone: ").append(member.getPhone()).append("\n");
+            sb.append("Email: ").append(member.getEmail()).append("\n");
+            sb.append("Gender: ").append(member.getGender()).append("\n");
+            sb.append("DOB: ").append(member.getDOB()).append("\n");
+            sb.append("Membership Start Date: ").append(member.getMembershipStartDate()).append("\n");
+            sb.append("Attendance: ").append(member.getAttendance()).append("\n");
+            sb.append("Loyalty Points: ").append(member.getLoyaltyPoints()).append("\n");
+            sb.append("Status: ").append(member.isActiveStatus() ? "Active" : "Inactive").append("\n");
+        }
+
+        JTextArea textArea = new JTextArea(sb.toString());
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setEditable(false);
+        JOptionPane.showMessageDialog(frame, scrollPane, "Member List", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+    * Clears all input fields in the form to their default states.
+    */
+    private void clearFields() {
+        txtId.setText("");
+        txtName.setText("");
+        txtLocation.setText("");
+        txtEmail.setText("");
+        txtPhone.setText("");
+        genderGroup.clearSelection();
+        txtReferralSource.setText("");
+        txtPaidAmount.setText("");
+        txtRemovalReason.setText("");
+        txtTrainersName.setText("");
+        txtDiscountAmount.setText("0");
+        comboPlan.setSelectedIndex(0);
+    }
+
     
