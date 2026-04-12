@@ -1093,4 +1093,10 @@ class GymGUI {
         comboPlan.setSelectedIndex(0);
     }
 
-    
+    /**
+    * Main method to run the GUI.
+    */
+    public static void main(String[] args) {
+        new GymGUI();
+    }
+}
