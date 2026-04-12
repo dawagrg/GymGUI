@@ -130,7 +130,7 @@ This project demonstrates:
 
 ## Author
 
-*Name: Dhawa Tamu Gurung
+Name: Dhawa Tamu Gurung
 
 ## License
 
