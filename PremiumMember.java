@@ -33,19 +33,19 @@ public class PremiumMember extends GymMember {
         this.discountAmount = 0;
     }
 
-    public double getPremiumCharge() { 
+    public double getPremiumCharge() {
         return premiumCharge;
     }
 
-    public String getPersonalTrainer() { 
-        return personalTrainer; 
+    public String getPersonalTrainer() {
+        return personalTrainer;
     }
 
-    public boolean IsFullPayment() { 
+    public boolean IsFullPayment() {
         return isFullPayment;
     }
 
-    public double getPaidAmount() { 
+    public double getPaidAmount() {
         return paidAmount;
     }
 
@@ -122,7 +122,7 @@ public class PremiumMember extends GymMember {
     }
 
     /**
-     * This method displays all details of the premium member, including payment and trainer information.
+     * This method displays all the details of the premium member, including payment and trainer information.
      */
     @Override
     public void display() {
