@@ -787,4 +787,132 @@ class GymGUI {
         }
     }
 
+    /**
+    * Listener to handle reading and displaying member data from the file.
+    * Shows the file content in a scrollable JTextArea within a separate JFrame.
+    */
+    private class ReadFromFileListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JFrame readFrame = new JFrame("Member Details");
+            readFrame.setSize(1000, 600); 
+
+            JTextArea textArea = new JTextArea();
+            textArea.setEditable(false);
+            textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 12));
+            
+            textArea.setMargin(new java.awt.Insets(10, 10, 10, 10));
+            
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader("MemberDetails.txt"));
+                String line;
+                StringBuilder content = new StringBuilder();
+
+                String separator = "";
+                for(int i = 0; i < 200; i++) {
+                    separator += "-";
+                }
+                separator += "\n";
+                
+                while ((line = reader.readLine()) != null) {
+                    content.append(line).append("\n");
+                    
+                    if (line.contains("ID") && line.contains("Name")) {
+                        content.append(separator);
+                    }
+                }
+                
+                reader.close();
+                textArea.setText(content.toString());
+            } catch (IOException ex) {
+                textArea.setText("Error reading file: " + ex.getMessage());
+            }
+
+            readFrame.setLocationRelativeTo(null);
+            
+            JButton closeButton = new JButton("Close");
+            closeButton.addActionListener(event -> readFrame.dispose());
+            
+            readFrame.setLayout(new java.awt.BorderLayout());
+            readFrame.add(scrollPane, java.awt.BorderLayout.CENTER);
+            
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.add(closeButton);
+            readFrame.add(buttonPanel, java.awt.BorderLayout.SOUTH);
+            readFrame.setVisible(true);
+        }
+    }
+
+    /**
+    * Adds a new RegularMember to the members list using form input.
+    * Ensures the ID is unique and displays a message upon success or failure.
+    */
+    private void addRegularMember() {
+        try {
+            int id = Integer.parseInt(txtId.getText());
+
+            for (GymMember member : members) {
+                if (member.getId() == id) {
+                    JOptionPane.showMessageDialog(frame, "Member ID already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
+            String name = txtName.getText();
+            String location = txtLocation.getText();
+            String phone = txtPhone.getText();
+            String email = txtEmail.getText();
+            String gender = maleButton.isSelected() ? "Male" : "Female";
+
+            String dob = comboDOBDay.getSelectedItem() + "-" + comboDOBMonth.getSelectedItem() + "-" + comboDOBYear.getSelectedItem();
+            String startDate = comboMembershipDateDay.getSelectedItem() + "-" + comboMembershipDateMonth.getSelectedItem() + "-" + comboMembershipDateYear.getSelectedItem();
+            String referral = txtReferralSource.getText();
+
+            RegularMember newMember = new RegularMember(id, name, location, phone, email, gender, dob, startDate, referral);
+            members.add(newMember);
+
+            JOptionPane.showMessageDialog(frame, "Regular member added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+            clearFields();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+    * Adds a new PremiumMember to the members list using form input.
+    * Validates the ID and shows a confirmation or error message accordingly.
+    */
+    private void addPremiumMember() {
+        try {
+            int id = Integer.parseInt(txtId.getText());
+
+            for (GymMember member : members) {
+                if (member.getId() == id) {
+                    JOptionPane.showMessageDialog(frame, "Member ID already exists", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
+            String name = txtName.getText();
+            String location = txtLocation.getText();
+            String phone = txtPhone.getText();
+            String email = txtEmail.getText();
+            String gender = maleButton.isSelected() ? "Male" : "Female";
+
+            String dob = comboDOBDay.getSelectedItem() + "-" + comboDOBMonth.getSelectedItem() + "-" + comboDOBYear.getSelectedItem();
+            String startDate = comboMembershipDateDay.getSelectedItem() + "-" + comboMembershipDateMonth.getSelectedItem() + "-" + comboMembershipDateYear.getSelectedItem();
+            String trainer = txtTrainersName.getText();
+
+            PremiumMember newMember = new PremiumMember(id, name, location, phone, email, 
+                    gender, dob, startDate, trainer);
+            members.add(newMember);
+
+            JOptionPane.showMessageDialog(frame, "Premium member added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+            clearFields();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Invalid ID format", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     
