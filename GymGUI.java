@@ -730,4 +730,61 @@ class GymGUI {
         }
     }
 
+    /**
+    * Listener for clearing all input fields in the form.
+    * Resets all text fields, selection inputs, and radio button groups to default values.
+    */
+    private class ClearListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            txtId.setText("");
+            txtName.setText("");
+            txtLocation.setText("");
+            txtEmail.setText("");
+            txtPhone.setText("");
+            genderGroup.clearSelection();
+            txtReferralSource.setText("");
+            txtPaidAmount.setText("");
+            txtRemovalReason.setText("");
+            txtTrainersName.setText("");
+            txtDiscountAmount.setText("0");
+            comboPlan.setSelectedIndex(0);
+        }
+    }
+
+    /**
+    * Listener to handle saving member data to a file.
+    * Writes all GymMember objects (Regular and Premium) into a formatted text file.
+    * Displays a success or error message depending on the outcome.
+    */
+    private class SaveToFileListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                PrintWriter writer = new PrintWriter(new FileWriter("MemberDetails.txt"));
+                writer.println(String.format("%-5s %-15s %-15s %-15s %-25s %-20s %-10s %-10s %-10s %-15s %-10s %-15s %-15s",
+                    "ID", "Name", "Location", "Phone", "Email", "Start Date", "Plan", "Price", 
+                    "Attend", "Loyalty", "Active", "Full Pay", "Discount"));
+                for (GymMember member : members) {
+                    if (member instanceof RegularMember) {
+                        RegularMember regular = (RegularMember) member;
+                        writer.println(String.format("%-5d %-15s %-15s %-15s %-25s %-20s %-10s %-10.2f %-10d %-15.2f %-10b %-15s %-15.2f",
+                            regular.getId(), regular.getName(), regular.getLocation(), regular.getPhone(),
+                            regular.getEmail(), regular.getMembershipStartDate(), regular.getPlan(), regular.getPrice(),
+                            regular.getAttendance(), regular.getLoyaltyPoints(), regular.isActiveStatus(), "-", 0.0));
+                    } else if (member instanceof PremiumMember) {
+                        PremiumMember premium = (PremiumMember) member;
+                        writer.println(String.format("%-5d %-15s %-15s %-15s %-25s %-20s %-10s %-10.2f %-10d %-15.2f %-10b %-15b %-15.2f",
+                            premium.getId(), premium.getName(), premium.getLocation(), premium.getPhone(),
+                            premium.getEmail(), premium.getMembershipStartDate(), "Premium", premium.getPremiumCharge(),
+                            premium.getAttendance(), premium.getLoyaltyPoints(), premium.isActiveStatus(),
+                            premium.IsFullPayment(), premium.getDiscountAmount()));
+                    }
+                }
+                writer.close();
+                JOptionPane.showMessageDialog(frame, "Data saved to file successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(frame, "Error saving to file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     
